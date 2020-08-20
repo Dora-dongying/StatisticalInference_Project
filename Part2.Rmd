@@ -1,0 +1,74 @@
+---
+title: 'Statistical Inference Course Project: Part 2'
+author: "Dongying"
+date: "8/20/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Basic Inferential Data Analysis Instructions
+Now in the second portion of the project, I'm going to analyze the ToothGrowth data in the R datasets package.  
+
+First, let's load the ToothGrowth data and perform some basic exploratory data analyses
+Provide a basic summary of the data.
+```{r, loadData, cache=TRUE}
+library(datasets)
+data(ToothGrowth)
+str(ToothGrowth)
+head(ToothGrowth)
+summary(ToothGrowth)
+```
+We can also make a box plot to see how the tooth growth length is related to supp and dose:
+```{r, fig2, fig.height=3, fig.width=5}
+library(ggplot2)
+ggplot(data = ToothGrowth, aes(x = as.factor(dose), y = len, fill = supp)) +
+    geom_boxplot() +
+    xlab("Dose(mg)") +
+    ylab("Tooth growth length")
+```
+
+Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose.
+### Hypothesis 1:
+Two supplies have the same influence to the tooth growth over the whole dose range.
+```{r}
+test_supp1 <- t.test(len ~ supp, data = ToothGrowth)
+test_supp1$conf.int
+test_supp1$p.value
+```
+The confidence interval includes 0 and p value is greater than 0.05. Fail to reject hypo 1. Can't tell the difference.
+
+### Hypothesis 2:
+Two supplies have the same influence to the tooth growth with 0.5 mg dosage.
+```{r}
+test_supp2 <- t.test(len ~ supp, data = subset(ToothGrowth, dose == 0.5))
+test_supp2$conf.int
+test_supp2$p.value
+```
+The confidence interval is greater than 0 and p value is smaller than 0.05. Reject hypo 2. OJ performs better than VC with 0.5 mg dosage.
+
+### Hypothesis 3:
+Two supplies have the same influence to the tooth growth with 1.0 mg dosage.
+```{r}
+test_supp3 <- t.test(len ~ supp, data = subset(ToothGrowth, dose == 1.0))
+test_supp3$conf.int
+test_supp3$p.value
+```
+The confidence interval is greater than 0 and p value is smaller than 0.05. Reject hypo 3. OJ performs better than VC with 1.0 mg dosage.
+
+### Hypothesis 4:
+Two supplies have the same influence to the tooth growth with 2.0 mg dosage.
+```{r}
+test_supp4 <- t.test(len ~ supp, data = subset(ToothGrowth, dose == 2.0))
+test_supp4$conf.int
+test_supp4$p.value
+```
+The confidence interval includes 0 and p value is greater than 0.05. Fail to reject hypo 4. Can't tell the difference.
+
+## Conculsion
+OJ performs better than VC for dosages 0.5 & 1.0 mg. OJ and VC gives the same amount of tooth growth for dose amount 2.0 mg. 
+
+
+
